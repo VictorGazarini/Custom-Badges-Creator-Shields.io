@@ -6,7 +6,6 @@
     <title>Custom Badge Creator</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='output.css') }}">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/mdbassit/Coloris@latest/dist/coloris.min.css"/>
-    <script src="https://unpkg.com/htmx.org@1.9.10"></script>
     <script src="https://cdn.jsdelivr.net/gh/mdbassit/Coloris@latest/dist/coloris.min.js"></script>
 </head>
 <body class="min-h-screen py-4 sm:py-8 px-4 sm:px-6">
@@ -20,7 +19,7 @@
         </div>
 
         <!-- Botão para abrir menu lateral -->
-        <button onclick="toggleSidebar()" id="menu-toggle-btn" class="menu-toggle">
+        <button id="menu-toggle-btn" class="menu-toggle">
             <span>Menu</span>
             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
@@ -32,7 +31,7 @@
             <!-- Preview em Tempo Real -->
             <div class="flex items-center justify-center p-8 min-h-[200px] w-full max-w-5xl">
                 <div class="floating-badge">
-                    <img id="live-preview" src="https://img.shields.io/badge/build-passing-brightgreen?style=for-the-badge" alt="Badge Preview" class="badge-img">
+                    <img id="live-preview" src="https://img.shields.io/badge/BUILD-PASSING-brightgreen?style=flat" alt="Badge Preview" class="badge-img">
                 </div>
             </div>
 
@@ -40,15 +39,15 @@
             <div class="glass-card gradient-border rounded-lg p-6 w-full max-w-5xl">
                 <div class="flex items-center justify-between mb-3">
                     <h3 class="text-sm font-semibold text-gray-200">Output Format</h3>
-                    <select id="output-format" class="glass-input px-3 py-1 text-xs" onchange="updateLivePreview()">
+                    <select id="output-format" class="glass-input px-3 py-1 text-xs">
                         <option value="url">URL</option>
                         <option value="markdown">Markdown</option>
                         <option value="html">HTML/XML</option>
                     </select>
                 </div>
                 <div class="space-y-3">
-                    <code id="live-url" class="glass-code block px-4 py-3 rounded-lg text-xs font-mono overflow-x-auto overflow-y-auto max-h-32 whitespace-pre-wrap break-all">https://img.shields.io/badge/build-passing-brightgreen?style=for-the-badge</code>
-                    <button onclick="copyLiveUrl(event)" class="btn-primary copy-btn w-full text-sm"><span class="btn-label">Copy</span></button>
+                    <code id="live-url" class="glass-code block px-4 py-3 rounded-lg text-xs font-mono overflow-x-auto overflow-y-auto max-h-32 whitespace-pre-wrap break-all">https://img.shields.io/badge/BUILD-PASSING-brightgreen?style=flat</code>
+                    <button class="btn-primary copy-btn w-full text-sm"><span class="btn-label">Copy</span></button>
                 </div>
             </div>
 
@@ -68,7 +67,7 @@
         <div class="p-6">
             <div class="flex items-center justify-between mb-6">
                 <h2 class="text-lg font-semibold text-gray-200">Settings</h2>
-                <button onclick="toggleSidebar()" class="text-gray-400 hover:text-white transition-colors">
+                <button id="menu-close-btn" class="text-gray-400 hover:text-white transition-colors">
                     <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
                     </svg>
@@ -76,7 +75,6 @@
             </div>
 
             <div id="badge-form" class="space-y-6">
-                
                 <!-- Content -->
                 <div class="space-y-4 pb-4 border-b border-white/5">
                     <h3 class="text-xs font-semibold text-gray-400 uppercase tracking-wider">Content</h3>
@@ -85,24 +83,19 @@
                             Label (optional)
                             <span class="tooltip-trigger relative">
                                 <span class="info-icon">i</span>
-                                    <span class="tooltip">Left-side label text</span>
+                                <span class="tooltip">Left-side label text</span>
                             </span>
+                            <span id="label-warning-icon" class="hidden text-red-500 font-bold text-sm" title="Label is required when Label Color is set">!</span>
                         </label>
-                        <input type="text" name="label" id="label" placeholder="build, coverage, version" class="glass-input w-full px-3 py-2 text-sm" oninput="updateLivePreview()">
+                        <input type="text" name="label" id="label" placeholder="BUILD" class="glass-input w-full px-3 py-2 text-sm">
                     </div>
                     <div>
-                        <label class="block text-xs text-gray-400 mb-1 flex items-center gap-2">
-                            Message *
-                            <span class="tooltip-trigger relative">
-                                <span class="info-icon">i</span>
-                                    <span class="tooltip">Main text (required)</span>
-                            </span>
-                        </label>
-                        <input type="text" name="message" id="message" placeholder="passing, 95%, v1.0.0" required class="glass-input w-full px-3 py-2 text-sm" oninput="toggleLabelColorSection(); updateLivePreview()">
+                        <label class="block text-xs text-gray-400 mb-1">Message *</label>
+                        <input type="text" name="message" id="message" placeholder="PASSING" required class="glass-input w-full px-3 py-2 text-sm">
                     </div>
                     <div>
                         <label class="block text-xs text-gray-400 mb-1">Color</label>
-                        <select name="color" id="color" class="glass-input w-full px-3 py-2 text-sm" onchange="updateLivePreview()">
+                        <select name="color" id="color" class="glass-input w-full px-3 py-2 text-sm">
                             <option value="brightgreen" selected>Bright Green</option>
                             <option value="green">Green</option>
                             <option value="yellow">Yellow</option>
@@ -119,26 +112,26 @@
                     <h3 class="text-xs font-semibold text-gray-400 uppercase tracking-wider">Style</h3>
                     <div>
                         <label class="block text-xs text-gray-400 mb-1">Style</label>
-                        <select name="style" id="style" class="glass-input w-full px-3 py-2 text-sm" onchange="updateLivePreview()">
-                            <option value="flat">Flat</option>
+                        <select name="style" id="style" class="glass-input w-full px-3 py-2 text-sm">
+                            <option value="flat" selected>Flat</option>
                             <option value="flat-square">Flat Square</option>
                             <option value="plastic">Plastic</option>
-                            <option value="for-the-badge" selected>For The Badge</option>
+                            <option value="for-the-badge">For The Badge</option>
                             <option value="social">Social</option>
                         </select>
                     </div>
                     <div id="label-color-section">
                         <label class="block text-xs text-gray-400 mb-1">Label Color</label>
-                        <select id="labelColor-select" class="glass-input w-full px-3 py-2 text-sm mb-2" onchange="handleLabelColorSelect()" disabled>
-                                <option value="" selected>Default</option>
-                                <option value="#333333">Dark Gray</option>
-                                <option value="#0000ff">Blue</option>
-                                <option value="#800080">Purple</option>
-                                <option value="custom">Custom</option>
+                        <select id="labelColor-select" class="glass-input w-full px-3 py-2 text-sm mb-2">
+                            <option value="">Default</option>
+                            <option value="#333333">Dark Gray</option>
+                            <option value="#0000ff">Blue</option>
+                            <option value="#800080">Purple</option>
+                            <option value="custom">Custom</option>
                         </select>
-                            <div id="labelColor-custom-wrapper" class="flex items-center gap-2 glass-input px-3 py-2" style="display: none;">
-                            <div class="w-5 h-5 rounded border border-white/20" style="background-color: #555555;" id="labelColor-preview"></div>
-                                <input type="text" id="labelColor-picker" data-coloris class="bg-transparent outline-none text-sm w-full" value="" placeholder="Choose a color" oninput="document.getElementById('labelColor').value=this.value; document.getElementById('labelColor-preview').style.backgroundColor=this.value; updateLivePreview();">
+                        <div id="labelColor-custom-wrapper" class="flex items-center gap-2 glass-input px-3 py-2 hidden">
+                            <div class="w-5 h-5 rounded border border-white/20 label-color-preview" id="labelColor-preview"></div>
+                            <input type="text" id="labelColor-picker" data-coloris class="bg-transparent outline-none text-sm w-full" value="" placeholder="Choose a color">
                         </div>
                         <input type="hidden" id="labelColor" value="">
                     </div>
@@ -148,12 +141,12 @@
                 <div class="space-y-4 pb-4">
                     <h3 class="text-xs font-semibold text-gray-400 uppercase tracking-wider">Logo</h3>
                     <div class="flex gap-2">
-                        <button type="button" onclick="toggleLogoType('simple')" id="btn-simple" class="flex-1 px-3 py-2 text-xs rounded bg-purple-600/30 text-white border border-purple-500/20">Simple Icons</button>
-                        <button type="button" onclick="toggleLogoType('custom')" id="btn-custom" class="flex-1 px-3 py-2 text-xs rounded bg-white/5 text-gray-400 border border-white/5">Upload SVG</button>
+                        <button type="button" id="btn-simple" class="flex-1 px-3 py-2 text-xs rounded bg-purple-600/30 text-white border border-purple-500/20">Simple Icons</button>
+                        <button type="button" id="btn-custom" class="flex-1 px-3 py-2 text-xs rounded bg-white/5 text-gray-400 border border-white/5">Upload SVG</button>
                     </div>
-                    
+
                     <div id="simple-logo" class="space-y-3">
-                        <input type="text" name="logo" id="logo" list="popular-icons" placeholder="github, docker, python..." class="glass-input w-full px-3 py-2 text-sm" oninput="updateLivePreview()">
+                        <input type="text" name="logo" id="logo" list="popular-icons" placeholder="github, docker, python..." class="glass-input w-full px-3 py-2 text-sm">
                         <datalist id="popular-icons">
                             <option value="github">GitHub</option>
                             <option value="docker">Docker</option>
@@ -163,22 +156,22 @@
                             <option value="nodejs">Node.js</option>
                         </datalist>
                     </div>
-                    
+
                     <div id="custom-logo" class="hidden">
                         <input type="file" name="file" id="file" accept=".svg" class="glass-input w-full px-3 py-2 text-sm cursor-pointer">
                     </div>
-                    
+
                     <div id="logo-color-section">
-                            <label class="block text-xs text-gray-400 mb-1">Logo Color</label>
-                        <select id="logoColor-select" class="glass-input w-full px-3 py-2 text-sm mb-2" onchange="handleLogoColorSelect()">
-                                <option value="">Default (Auto)</option>
-                                <option value="#ffffff">White</option>
-                                <option value="#000000">Black</option>
-                                <option value="custom">Custom</option>
+                        <label class="block text-xs text-gray-400 mb-1">Logo Color</label>
+                        <select id="logoColor-select" class="glass-input w-full px-3 py-2 text-sm mb-2">
+                            <option value="">Default (Auto)</option>
+                            <option value="#ffffff">White</option>
+                            <option value="#000000">Black</option>
+                            <option value="custom">Custom</option>
                         </select>
-                        <div id="logoColor-custom-wrapper" class="flex items-center gap-2 glass-input px-3 py-2" style="display: none;">
-                            <div class="w-5 h-5 rounded border border-white/20" style="background-color: #ffffff;" id="logoColor-preview"></div>
-                                <input type="text" id="logoColor-picker" data-coloris class="bg-transparent outline-none text-sm w-full" value="" placeholder="Choose a color" oninput="document.getElementById('logoColor').value=this.value; document.getElementById('logoColor-preview').style.backgroundColor=this.value; updateLivePreview();">
+                        <div id="logoColor-custom-wrapper" class="flex items-center gap-2 glass-input px-3 py-2 hidden">
+                            <div class="w-5 h-5 rounded border border-white/20 logo-color-preview" id="logoColor-preview"></div>
+                            <input type="text" id="logoColor-picker" data-coloris class="bg-transparent outline-none text-sm w-full" value="" placeholder="Choose a color">
                         </div>
                         <input type="hidden" id="logoColor" value="">
                     </div>
@@ -187,405 +180,6 @@
         </div>
     </div>
 
-    <script>
-        let customSvgDataUrl = null;
-        
-        // Toggle sidebar
-        function toggleSidebar() {
-            const sidebar = document.getElementById('sidebar');
-            const menuBtn = document.getElementById('menu-toggle-btn');
-            const contentContainer = document.getElementById('content-container');
-            
-            sidebar.classList.toggle('hidden');
-            menuBtn.classList.toggle('open');
-            contentContainer.classList.toggle('menu-open');
-        }
-        
-        // Função para converter hex/rgb/rgba/hsl para hex
-        function hexToColor(color) {
-            if (!color) return null;
-            
-            // Se já é hex, retorna como está
-            if (color.match(/^#[0-9A-F]{6}$/i)) {
-                return color;
-            }
-            
-            // Criar elemento temporário para converter
-            const elem = document.createElement('div');
-            elem.style.color = color;
-            document.body.appendChild(elem);
-            const computed = window.getComputedStyle(elem).color;
-            document.body.removeChild(elem);
-            
-            // Extrair RGB
-            const match = computed.match(/rgb\((\d+),\s*(\d+),\s*(\d+)\)/);
-            if (match) {
-                const hex = '#' + [match[1], match[2], match[3]]
-                    .map(x => parseInt(x).toString(16).padStart(2, '0'))
-                    .join('')
-                    .toUpperCase();
-                return hex;
-            }
-            
-            return null;
-        }
-        
-        // Função para converter nomes de cores CSS para hex
-        function colorToHex(colorName) {
-            const colors = {
-                'brightgreen': '#44cc11',
-                'green': '#4c1',
-                'yellow': '#dfb317',
-                'yellowgreen': '#a3c51c',
-                'orange': '#fe7d37',
-                'red': '#e05d44',
-                'blue': '#0366d6',
-                'lightgrey': '#9f9f9f',
-                'blueviolet': '#8b5cf6',
-                'ff69b4': '#ff69b4',
-                '9cf': '#00ccff',
-                'white': '#ffffff',
-                'black': '#000000',
-                '555': '#555555',
-                'purple': '#8b5cf6'
-            };
-            return colors[colorName] || null;
-        }
-        
-        // Toggle entre Simple Icons e Custom SVG
-        function toggleLogoType(type) {
-            const simpleDiv = document.getElementById('simple-logo');
-            const customDiv = document.getElementById('custom-logo');
-            const logoColorSection = document.getElementById('logo-color-section');
-            const btnSimple = document.getElementById('btn-simple');
-            const btnCustom = document.getElementById('btn-custom');
-            const fileInput = document.getElementById('file');
-            const logoInput = document.getElementById('logo');
-            
-            if (type === 'simple') {
-                // Mostrar simple icons e logo color
-                simpleDiv.classList.remove('hidden');
-                customDiv.classList.add('hidden');
-                logoColorSection.classList.remove('hidden');
-                
-                // Estilo dos botões
-                btnSimple.className = 'flex-1 px-3 py-2 text-xs rounded bg-purple-600/50 text-white border border-purple-500/20';
-                btnCustom.className = 'flex-1 px-3 py-2 text-xs rounded bg-white/5 text-gray-400 border border-white/5';
-                
-                // Limpar inputs
-                fileInput.removeAttribute('required');
-                fileInput.value = '';
-                customSvgDataUrl = null;
-                logoInput.focus();
-            } else {
-                // Mostrar custom SVG e esconder logo color
-                simpleDiv.classList.add('hidden');
-                customDiv.classList.remove('hidden');
-                logoColorSection.classList.add('hidden');
-                
-                // Estilo dos botões
-                btnCustom.className = 'flex-1 px-3 py-2 text-xs rounded bg-purple-600/50 text-white border border-purple-500/20';
-                btnSimple.className = 'flex-1 px-3 py-2 text-xs rounded bg-white/5 text-gray-400 border border-white/5';
-                
-                // Limpar inputs
-                logoInput.value = '';
-                fileInput.focus();
-            }
-            updateLivePreview();
-        }
-        
-        // Habilitar/desabilitar Label Color baseado no campo Message
-        function toggleLabelColorSection() {
-            const message = document.getElementById('message').value.trim();
-            const hasMessage = message.length > 0;
-            
-            // Habilitar/desabilitar dropdown
-            const select = document.getElementById('labelColor-select');
-            if (select) select.disabled = !hasMessage;
-            
-            // Ajustar opacidade visual da seção
-            const section = document.getElementById('label-color-section');
-            if (section) {
-                section.style.opacity = hasMessage ? '1' : '0.5';
-            }
-        }
-        
-        // Handler para Label Color dropdown
-        function handleLabelColorSelect() {
-            const select = document.getElementById('labelColor-select');
-            const customWrapper = document.getElementById('labelColor-custom-wrapper');
-            const hiddenInput = document.getElementById('labelColor');
-            
-            if (select.value === 'custom') {
-                customWrapper.style.display = 'flex';
-                hiddenInput.value = document.getElementById('labelColor-picker').value || '';
-            } else {
-                customWrapper.style.display = 'none';
-                hiddenInput.value = select.value;
-            }
-            updateLivePreview();
-        }
-        
-        // Handler para Logo Color dropdown
-        function handleLogoColorSelect() {
-            const select = document.getElementById('logoColor-select');
-            const customWrapper = document.getElementById('logoColor-custom-wrapper');
-            const hiddenInput = document.getElementById('logoColor');
-            
-            if (select.value === 'custom') {
-                customWrapper.style.display = 'flex';
-                hiddenInput.value = document.getElementById('logoColor-picker').value || '';
-            } else {
-                customWrapper.style.display = 'none';
-                hiddenInput.value = select.value;
-            }
-            updateLivePreview();
-        }
-        
-        // Funções para definir cores (manter compatibilidade)
-        function setLabelColor(value, displayValue) {
-            document.getElementById('labelColor').value = value;
-            updateLivePreview();
-        }
-        
-        function setLogoColor(value, displayValue) {
-            document.getElementById('logoColor').value = value;
-            updateLivePreview();
-        }
-        
-        // Atualizar preview em tempo real
-        function updateLivePreview() {
-            console.log('=== updateLivePreview ATIVO ===');
-            
-            // Pegar todos os valores
-            const label = (document.getElementById('label') ? document.getElementById('label').value.trim() : '');
-            const message = (document.getElementById('message') ? document.getElementById('message').value.trim() : '') || 'message';
-            
-            // Para cor: usar dropdown se tiver selecionado, senão usar color picker
-            const colorSelect = (document.getElementById('color') ? document.getElementById('color').value : 'brightgreen');
-            const colorPicker = (document.getElementById('color-picker') ? document.getElementById('color-picker').value : '#44cc11');
-            const color = colorSelect || colorPicker;
-            
-            console.log('Label:', label);
-            console.log('Message:', message);
-            console.log('Color:', color);
-            
-            // Construir badgeContent: label-message-color (ou message-color)
-            let badgeContent;
-            if (label) {
-                badgeContent = `${label}-${message}-${color}`;
-            } else {
-                badgeContent = `${message}-${color}`;
-            }
-            
-            console.log('Badge Content:', badgeContent);
-            
-            // URL base
-            let url = `https://img.shields.io/badge/${badgeContent}`;
-            
-            // Query params
-            const params = new URLSearchParams();
-            
-            const style = (document.getElementById('style') ? document.getElementById('style').value : '');
-            if (style) params.append('style', style);
-            
-            // Label Color: usar valor do campo hidden
-            const labelColor = (document.getElementById('labelColor') ? document.getElementById('labelColor').value : '');
-            if (labelColor && labelColor !== '') {
-                params.append('labelColor', labelColor);
-            }
-            
-            const logoSimple = (document.getElementById('logo') ? document.getElementById('logo').value.trim() : '');
-            
-            // Logo Color: usar valor do campo hidden
-            const logoColor = (document.getElementById('logoColor') ? document.getElementById('logoColor').value : '');
-            if (logoColor && logoColor !== '') {
-                params.append('logoColor', logoColor);
-            }
-            
-            const logoSize = (document.getElementById('logoSize') ? document.getElementById('logoSize').value : '');
-            if (logoSize) params.append('logoSize', logoSize);
-            
-            // Logo
-            if (customSvgDataUrl) {
-                params.append('logo', customSvgDataUrl);
-            } else if (logoSimple) {
-                params.append('logo', logoSimple);
-            }
-            
-            // URL completa
-            const queryString = params.toString();
-            if (queryString) {
-                url += '?' + queryString;
-            }
-            
-            console.log('URL FINAL:', url);
-            
-            // ATUALIZAR A IMAGEM
-            const previewImg = document.getElementById('live-preview');
-            if (previewImg) {
-                previewImg.src = url;
-                console.log('✓ src da imagem atualizado');
-            } else {
-                console.error('✗ ERRO: live-preview não encontrado');
-            }
-            
-            // Atualizar formato de saída
-            updateOutputFormat(url);
-        }
-        
-        // Atualizar formato de saída
-        function updateOutputFormat(url) {
-            const format = document.getElementById('output-format') ? document.getElementById('output-format').value : 'url';
-            const outputElement = document.getElementById('live-url');
-            
-            if (!outputElement) return;
-            
-            if (format === 'url') {
-                outputElement.textContent = url;
-            } else if (format === 'markdown') {
-                outputElement.textContent = `![Badge](${url})`;
-            } else if (format === 'html') {
-                outputElement.textContent = `<img src="${url}" />`;
-            }
-        }
-        
-        // Copiar URL
-        let copyTimeoutId = null;
-        
-        function copyLiveUrl(event) {
-            const btn = event.currentTarget;
-            const label = btn.querySelector('.btn-label');
-
-            const ripple = document.createElement('span');
-            ripple.className = 'copy-ripple';
-            const rect = btn.getBoundingClientRect();
-            const size = Math.max(rect.width, rect.height) * 2;
-            ripple.style.width = `${size}px`;
-            ripple.style.height = `${size}px`;
-            ripple.style.left = `${event.clientX - rect.left}px`;
-            ripple.style.top = `${event.clientY - rect.top}px`;
-            btn.appendChild(ripple);
-            setTimeout(() => ripple.remove(), 1200);
-
-            const existing = btn.querySelector('.copied-label');
-            if (existing) existing.remove();
-            btn.classList.add('is-copied');
-
-            const copied = document.createElement('span');
-            copied.className = 'copied-label';
-            copied.textContent = 'Copied!';
-            btn.appendChild(copied);
-
-            if (copyTimeoutId) clearTimeout(copyTimeoutId);
-            copyTimeoutId = setTimeout(() => {
-                const current = btn.querySelector('.copied-label');
-                if (current) current.remove();
-                btn.classList.remove('is-copied');
-                copyTimeoutId = null;
-            }, 1200);
-
-            const url = document.getElementById('live-url').textContent;
-            navigator.clipboard.writeText(url).then(() => {
-            }).catch(() => {
-                const existingFail = btn.querySelector('.copied-label');
-                if (existingFail) existingFail.remove();
-                btn.classList.add('is-copied');
-
-                const failed = document.createElement('span');
-                failed.className = 'copied-label';
-                failed.textContent = 'Copy failed';
-                btn.appendChild(failed);
-
-                if (copyTimeoutId) clearTimeout(copyTimeoutId);
-                copyTimeoutId = setTimeout(() => {
-                    const currentFail = btn.querySelector('.copied-label');
-                    if (currentFail) currentFail.remove();
-                    btn.classList.remove('is-copied');
-                    copyTimeoutId = null;
-                }, 1200);
-            });
-        }
-        
-        // Inicializar quando DOM carregar
-        document.addEventListener('DOMContentLoaded', function() {
-            console.log('✓ DOM carregado - Gerando preview inicial');
-            
-            // Listener para upload de SVG
-            const fileInput = document.getElementById('file');
-            if (fileInput) {
-                fileInput.addEventListener('change', function(e) {
-                    const file = e.target.files[0];
-                    if (!file) {
-                        customSvgDataUrl = null;
-                        updateLivePreview();
-                        return;
-                    }
-                    
-                    if (file.type !== 'image/svg+xml') {
-                        alert('Please select a valid SVG file');
-                        fileInput.value = '';
-                        customSvgDataUrl = null;
-                        updateLivePreview();
-                        return;
-                    }
-                    
-                    const reader = new FileReader();
-                    reader.onload = function(event) {
-                        try {
-                            const svgContent = event.target.result;
-                            console.log('SVG carregado, tamanho:', svgContent.length);
-                            
-                            // Converter para base64 simples
-                            const base64 = btoa(unescape(encodeURIComponent(svgContent)));
-                            customSvgDataUrl = `data:image/svg+xml;base64,${base64}`;
-                            
-                            console.log('✓ SVG Data URL criado:', customSvgDataUrl.substring(0, 80));
-                            updateLivePreview();
-                        } catch (error) {
-                            console.error('Error processing SVG:', error);
-                            alert('Error processing the SVG file');
-                            fileInput.value = '';
-                            customSvgDataUrl = null;
-                            updateLivePreview();
-                        }
-                    };
-                    reader.onerror = function() {
-                        console.error('Error reading file');
-                        alert('Error reading the file');
-                        fileInput.value = '';
-                        customSvgDataUrl = null;
-                    };
-                    reader.readAsText(file);
-                });
-            }
-            
-            // Inicializar Coloris
-            Coloris({
-                el: '[data-coloris]',
-                theme: 'polaroid',
-                themeMode: 'dark',
-                alpha: false,
-                format: 'hex',
-                formatToggle: false,
-                swatches: [
-                    '#44cc11',
-                    '#97ca00',
-                    '#dfb317',
-                    '#fe7d37',
-                    '#e05d44',
-                    '#007ec6',
-                    '#8a2be2',
-                    '#333333',
-                    '#555555',
-                    '#ffffff',
-                    '#000000'
-                ]
-            });
-            
-            updateLivePreview();
-        });
-        
-    </script>
+    <script src="{{ url_for('static', filename='app.js') }}" defer></script>
 </body>
 </html>

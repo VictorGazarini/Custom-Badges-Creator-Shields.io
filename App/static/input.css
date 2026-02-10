@@ -30,12 +30,21 @@
     background-image: linear-gradient(90deg, rgba(124, 58, 237, 0.8), rgba(13, 148, 136, 0.8)) !important;
   }
 
+  .copy-btn.is-clicked {
+    transform: scale(0.98);
+    box-shadow: 0 0 0 1px rgba(16, 185, 129, 0.35), 0 0 18px rgba(16, 185, 129, 0.3);
+  }
+
   .copy-ripple {
     position: absolute;
     border-radius: 9999px;
+    width: 50px;
+    height: 50px;
+    left: var(--ripple-x, 50%);
+    top: var(--ripple-y, 50%);
     transform: translate(-50%, -50%) scale(0);
-    background: radial-gradient(circle, rgba(34, 197, 94, 0.65) 0%, rgba(34, 197, 94, 0.3) 45%, rgba(34, 197, 94, 0) 70%);
-    animation: rippleGreen 1200ms ease-out;
+    background: radial-gradient(circle, rgba(34, 197, 94, 0.35) 0%, rgba(34, 197, 94, 0.15) 50%, rgba(34, 197, 94, 0) 100%);
+    animation: rippleGreen 800ms ease-out;
     pointer-events: none;
     z-index: 0;
   }
@@ -58,10 +67,10 @@
   @keyframes rippleGreen {
     0% {
       transform: translate(-50%, -50%) scale(0);
-      opacity: 0.8;
+      opacity: 0.6;
     }
     100% {
-      transform: translate(-50%, -50%) scale(2.0);
+      transform: translate(-50%, -50%) scale(6);
       opacity: 0;
     }
   }
@@ -81,9 +90,32 @@
     }
   }
 
-  /* Input minimalista */
+  /* Input styles */
   .glass-input {
     @apply bg-[#0a0a0f]/60 backdrop-blur-xl border border-white/10 text-gray-200 placeholder-gray-500 rounded-lg px-4 py-3 focus:border-purple-500/50 focus:ring-1 focus:ring-teal-500/30 transition-all outline-none;
+  }
+
+  /* Reduzir opacidade do placeholder em campos Label e Message */
+  #label::placeholder,
+  #message::placeholder {
+    color: rgba(229, 231, 235, 0.5);
+    opacity: 1;
+  }
+
+  #label:focus,
+  #message:focus {
+    color: #e5e7eb;
+  }
+
+  /* Select fix for dropdowns */
+  select.glass-input {
+    appearance: auto;
+    background-image: none;
+    padding-right: 2rem;
+  }
+
+  select.glass-input::after {
+    content: '▼';
   }
   
   /* Alerts minimalistas */
@@ -119,6 +151,37 @@
   .glass-code {
     -ms-overflow-style: none;
     scrollbar-width: none;
+  }
+
+  .clr-picker,
+  .clr-picker * {
+    color: #e5e7eb;
+  }
+
+  .clr-picker {
+    background: #0b0b12 !important;
+    border: 1px solid rgba(255, 255, 255, 0.08) !important;
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.45) !important;
+  }
+
+  .clr-gradient,
+  .clr-hue,
+  .clr-alpha {
+    border-color: rgba(255, 255, 255, 0.12) !important;
+  }
+
+  .clr-field button,
+  .clr-field input {
+    background: #0a0a0f !important;
+    color: #e5e7eb !important;
+    border-color: rgba(255, 255, 255, 0.12) !important;
+  }
+
+  .clipboard-helper {
+    position: absolute;
+    left: -9999px;
+    top: 0;
+    opacity: 0;
   }
   
   /* Efeito de luz na borda ao rolar/hover */
@@ -214,13 +277,21 @@
     width: 2.5rem;
     height: 2.5rem;
   }
-  
+
   input[type="color"]::-webkit-color-swatch-wrapper {
     @apply p-0.5;
   }
-  
+
   input[type="color"]::-webkit-color-swatch {
     @apply rounded border-0;
+  }
+
+  .label-color-preview {
+    background-color: #555555;
+  }
+
+  .logo-color-preview {
+    background-color: #ffffff;
   }
   
   /* Floating Badge Effect */
