@@ -16,7 +16,7 @@
             <h1 class="text-xl xs:text-2xl sm:text-3xl lg:text-4xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-teal-400 to-purple-500 mb-2 leading-tight">
                 Shields.io Badge Creator
             </h1>
-            <p class="text-gray-400 text-xs sm:text-sm max-w-2xl mx-auto">Personalize badges com todas as opções do Shields.io</p>
+            <p class="text-gray-400 text-xs sm:text-sm max-w-2xl mx-auto">Customize badges with all Shields.io options</p>
         </div>
 
         <!-- Botão para abrir menu lateral -->
@@ -39,7 +39,7 @@
             <!-- Formato de Saída -->
             <div class="glass-card gradient-border rounded-lg p-6 w-full max-w-5xl">
                 <div class="flex items-center justify-between mb-3">
-                    <h3 class="text-sm font-semibold text-gray-200">Formato de Saída</h3>
+                    <h3 class="text-sm font-semibold text-gray-200">Output Format</h3>
                     <select id="output-format" class="glass-input px-3 py-1 text-xs" onchange="updateLivePreview()">
                         <option value="url">URL</option>
                         <option value="markdown">Markdown</option>
@@ -48,14 +48,14 @@
                 </div>
                 <div class="space-y-3">
                     <code id="live-url" class="glass-code block px-4 py-3 rounded-lg text-xs font-mono overflow-x-auto overflow-y-auto max-h-32 whitespace-pre-wrap break-all">https://img.shields.io/badge/build-passing-brightgreen?style=for-the-badge</code>
-                    <button onclick="copyLiveUrl()" class="btn-primary w-full text-sm">Copiar</button>
+                    <button onclick="copyLiveUrl(event)" class="btn-primary copy-btn w-full text-sm"><span class="btn-label">Copy</span></button>
                 </div>
             </div>
 
             <!-- Loading -->
             <div id="loading" class="glass-loading hidden flex items-center gap-3 p-4 rounded-lg w-full max-w-5xl">
                 <div class="animate-spin h-5 w-5 border-2 border-purple-400 border-t-transparent rounded-full"></div>
-                <span class="font-medium text-sm">Processando SVG customizado...</span>
+                <span class="font-medium text-sm">Processing custom SVG...</span>
             </div>
 
             <!-- Resultado (para SVG upload) -->
@@ -67,7 +67,7 @@
     <div id="sidebar" class="sidebar hidden overflow-y-auto">
         <div class="p-6">
             <div class="flex items-center justify-between mb-6">
-                <h2 class="text-lg font-semibold text-gray-200">Configurações</h2>
+                <h2 class="text-lg font-semibold text-gray-200">Settings</h2>
                 <button onclick="toggleSidebar()" class="text-gray-400 hover:text-white transition-colors">
                     <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
@@ -77,15 +77,15 @@
 
             <div id="badge-form" class="space-y-6">
                 
-                <!-- Conteúdo -->
+                <!-- Content -->
                 <div class="space-y-4 pb-4 border-b border-white/5">
-                    <h3 class="text-xs font-semibold text-gray-400 uppercase tracking-wider">Conteúdo</h3>
+                    <h3 class="text-xs font-semibold text-gray-400 uppercase tracking-wider">Content</h3>
                     <div>
                         <label class="block text-xs text-gray-400 mb-1 flex items-center gap-2">
-                            Label (opcional)
+                            Label (optional)
                             <span class="tooltip-trigger relative">
                                 <span class="info-icon">i</span>
-                                <span class="tooltip">Texto do lado esquerdo do badge</span>
+                                    <span class="tooltip">Left-side label text</span>
                             </span>
                         </label>
                         <input type="text" name="label" id="label" placeholder="build, coverage, version" class="glass-input w-full px-3 py-2 text-sm" oninput="updateLivePreview()">
@@ -95,7 +95,7 @@
                             Message *
                             <span class="tooltip-trigger relative">
                                 <span class="info-icon">i</span>
-                                <span class="tooltip">Texto principal (obrigatório)</span>
+                                    <span class="tooltip">Main text (required)</span>
                             </span>
                         </label>
                         <input type="text" name="message" id="message" placeholder="passing, 95%, v1.0.0" required class="glass-input w-full px-3 py-2 text-sm" oninput="toggleLabelColorSection(); updateLivePreview()">
@@ -114,9 +114,9 @@
                     </div>
                 </div>
 
-                <!-- Estilo -->
+                <!-- Style -->
                 <div class="space-y-4 pb-4 border-b border-white/5">
-                    <h3 class="text-xs font-semibold text-gray-400 uppercase tracking-wider">Estilo</h3>
+                    <h3 class="text-xs font-semibold text-gray-400 uppercase tracking-wider">Style</h3>
                     <div>
                         <label class="block text-xs text-gray-400 mb-1">Style</label>
                         <select name="style" id="style" class="glass-input w-full px-3 py-2 text-sm" onchange="updateLivePreview()">
@@ -130,15 +130,15 @@
                     <div id="label-color-section">
                         <label class="block text-xs text-gray-400 mb-1">Label Color</label>
                         <select id="labelColor-select" class="glass-input w-full px-3 py-2 text-sm mb-2" onchange="handleLabelColorSelect()" disabled>
-                            <option value="" selected>Padrão</option>
-                            <option value="#333333">Cinza Escuro</option>
-                            <option value="#0000ff">Azul</option>
-                            <option value="#800080">Roxo</option>
-                            <option value="custom">Customizado</option>
+                                <option value="" selected>Default</option>
+                                <option value="#333333">Dark Gray</option>
+                                <option value="#0000ff">Blue</option>
+                                <option value="#800080">Purple</option>
+                                <option value="custom">Custom</option>
                         </select>
-                        <div id="labelColor-custom-wrapper" class="flex items-center gap-2 glass-input px-3 py-2" style="display: none;">
+                            <div id="labelColor-custom-wrapper" class="flex items-center gap-2 glass-input px-3 py-2" style="display: none;">
                             <div class="w-5 h-5 rounded border border-white/20" style="background-color: #555555;" id="labelColor-preview"></div>
-                            <input type="text" id="labelColor-picker" data-coloris class="bg-transparent outline-none text-sm w-full" value="" placeholder="Escolha uma cor" oninput="document.getElementById('labelColor').value=this.value; document.getElementById('labelColor-preview').style.backgroundColor=this.value; updateLivePreview();">
+                                <input type="text" id="labelColor-picker" data-coloris class="bg-transparent outline-none text-sm w-full" value="" placeholder="Choose a color" oninput="document.getElementById('labelColor').value=this.value; document.getElementById('labelColor-preview').style.backgroundColor=this.value; updateLivePreview();">
                         </div>
                         <input type="hidden" id="labelColor" value="">
                     </div>
@@ -169,16 +169,16 @@
                     </div>
                     
                     <div id="logo-color-section">
-                        <label class="block text-xs text-gray-400 mb-1">Logo Color</label>
+                            <label class="block text-xs text-gray-400 mb-1">Logo Color</label>
                         <select id="logoColor-select" class="glass-input w-full px-3 py-2 text-sm mb-2" onchange="handleLogoColorSelect()">
-                            <option value="">Padrão (Auto)</option>
-                            <option value="#ffffff">Branco</option>
-                            <option value="#000000">Preto</option>
-                            <option value="custom">Customizado</option>
+                                <option value="">Default (Auto)</option>
+                                <option value="#ffffff">White</option>
+                                <option value="#000000">Black</option>
+                                <option value="custom">Custom</option>
                         </select>
                         <div id="logoColor-custom-wrapper" class="flex items-center gap-2 glass-input px-3 py-2" style="display: none;">
                             <div class="w-5 h-5 rounded border border-white/20" style="background-color: #ffffff;" id="logoColor-preview"></div>
-                            <input type="text" id="logoColor-picker" data-coloris class="bg-transparent outline-none text-sm w-full" value="" placeholder="Escolha uma cor" oninput="document.getElementById('logoColor').value=this.value; document.getElementById('logoColor-preview').style.backgroundColor=this.value; updateLivePreview();">
+                                <input type="text" id="logoColor-picker" data-coloris class="bg-transparent outline-none text-sm w-full" value="" placeholder="Choose a color" oninput="document.getElementById('logoColor').value=this.value; document.getElementById('logoColor-preview').style.backgroundColor=this.value; updateLivePreview();">
                         </div>
                         <input type="hidden" id="logoColor" value="">
                     </div>
@@ -451,17 +451,59 @@
         }
         
         // Copiar URL
-        function copyLiveUrl() {
+        let copyTimeoutId = null;
+        
+        function copyLiveUrl(event) {
+            const btn = event.currentTarget;
+            const label = btn.querySelector('.btn-label');
+
+            const ripple = document.createElement('span');
+            ripple.className = 'copy-ripple';
+            const rect = btn.getBoundingClientRect();
+            const size = Math.max(rect.width, rect.height) * 2;
+            ripple.style.width = `${size}px`;
+            ripple.style.height = `${size}px`;
+            ripple.style.left = `${event.clientX - rect.left}px`;
+            ripple.style.top = `${event.clientY - rect.top}px`;
+            btn.appendChild(ripple);
+            setTimeout(() => ripple.remove(), 1200);
+
+            const existing = btn.querySelector('.copied-label');
+            if (existing) existing.remove();
+            btn.classList.add('is-copied');
+
+            const copied = document.createElement('span');
+            copied.className = 'copied-label';
+            copied.textContent = 'Copied!';
+            btn.appendChild(copied);
+
+            if (copyTimeoutId) clearTimeout(copyTimeoutId);
+            copyTimeoutId = setTimeout(() => {
+                const current = btn.querySelector('.copied-label');
+                if (current) current.remove();
+                btn.classList.remove('is-copied');
+                copyTimeoutId = null;
+            }, 1200);
+
             const url = document.getElementById('live-url').textContent;
             navigator.clipboard.writeText(url).then(() => {
-                const btn = event.target;
-                const originalText = btn.textContent;
-                btn.textContent = 'Copiado!';
-                btn.classList.add('opacity-75');
-                setTimeout(() => {
-                    btn.textContent = originalText;
-                    btn.classList.remove('opacity-75');
-                }, 2000);
+            }).catch(() => {
+                const existingFail = btn.querySelector('.copied-label');
+                if (existingFail) existingFail.remove();
+                btn.classList.add('is-copied');
+
+                const failed = document.createElement('span');
+                failed.className = 'copied-label';
+                failed.textContent = 'Copy failed';
+                btn.appendChild(failed);
+
+                if (copyTimeoutId) clearTimeout(copyTimeoutId);
+                copyTimeoutId = setTimeout(() => {
+                    const currentFail = btn.querySelector('.copied-label');
+                    if (currentFail) currentFail.remove();
+                    btn.classList.remove('is-copied');
+                    copyTimeoutId = null;
+                }, 1200);
             });
         }
         
@@ -481,7 +523,7 @@
                     }
                     
                     if (file.type !== 'image/svg+xml') {
-                        alert('Por favor, selecione um arquivo SVG válido');
+                        alert('Please select a valid SVG file');
                         fileInput.value = '';
                         customSvgDataUrl = null;
                         updateLivePreview();
@@ -501,16 +543,16 @@
                             console.log('✓ SVG Data URL criado:', customSvgDataUrl.substring(0, 80));
                             updateLivePreview();
                         } catch (error) {
-                            console.error('Erro ao processar SVG:', error);
-                            alert('Erro ao processar o arquivo SVG');
+                            console.error('Error processing SVG:', error);
+                            alert('Error processing the SVG file');
                             fileInput.value = '';
                             customSvgDataUrl = null;
                             updateLivePreview();
                         }
                     };
                     reader.onerror = function() {
-                        console.error('Erro ao ler arquivo');
-                        alert('Erro ao ler o arquivo');
+                        console.error('Error reading file');
+                        alert('Error reading the file');
                         fileInput.value = '';
                         customSvgDataUrl = null;
                     };

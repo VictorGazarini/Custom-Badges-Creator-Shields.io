@@ -7,6 +7,7 @@ import urllib.parse
 # Configurar logging
 logger = logging.getLogger(__name__)
 
+
 @app.route('/')
 def index():
     return render_template('index.html')
