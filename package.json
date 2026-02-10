@@ -1,0 +1,12 @@
+{
+  "name": "custom-shields-creator",
+  "version": "1.0.0",
+  "description": "Custom Shields.io Badge Creator",
+  "scripts": {
+    "build:css": "tailwindcss -i ./App/static/input.css -o ./App/static/output.css --minify",
+    "watch:css": "tailwindcss -i ./App/static/input.css -o ./App/static/output.css --watch"
+  },
+  "devDependencies": {
+    "tailwindcss": "^3.3.6"
+  }
+}
