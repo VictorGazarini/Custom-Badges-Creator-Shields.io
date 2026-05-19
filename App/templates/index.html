@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Custom Badge Creator</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='output.css') }}">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/mdbassit/Coloris@latest/dist/coloris.min.css"/>
+    <script src="https://cdn.jsdelivr.net/gh/mdbassit/Coloris@latest/dist/coloris.min.js"></script>
+</head>
+<body class="min-h-screen pt-20 sm:pt-24 px-4 sm:px-6">
+    <div id="content-container" class="content-container max-w-4xl mx-auto transition-all duration-300">
+        <div class="text-center mb-8 sm:mb-10 px-2 mt-16 sm:mt-14">
+            <h1 class="hero-title text-transparent bg-clip-text bg-gradient-to-r from-teal-400 to-purple-500 mb-4">
+                Badge Creator
+            </h1>
+            <p class="text-gray-400 text-sm sm:text-base max-w-2xl mx-auto">Customize badges with all Shields.io options</p>
+        </div>
+
+        <button id="menu-toggle-btn" class="menu-toggle">
+            <span>Menu</span>
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
+            </svg>
+        </button>
+
+        <div id="main-content" class="main-content space-y-4 flex flex-col items-center">
+            <div class="flex items-center justify-center p-6 min-h-[160px] w-full max-w-5xl mt-6">
+                <div class="floating-badge">
+                    <img id="live-preview" src="https://img.shields.io/badge/Badge-Creator-green?style=flat&labelColor=%23ffffff" alt="Badge Preview" class="badge-img">
+                </div>
+            </div>
+
+            <div class="glass-card gradient-border rounded-lg p-6 w-full max-w-5xl">
+                <div class="flex items-center justify-between mb-3">
+                    <h3 class="text-sm font-semibold text-gray-200">Output Format</h3>
+                    <select id="output-format" class="glass-input px-3 py-1 text-xs">
+                        <option value="url">URL</option>
+                        <option value="markdown">Markdown</option>
+                        <option value="html">HTML/XML</option>
+                    </select>
+                </div>
+                <div class="space-y-3">
+                    <code id="live-url" class="glass-code block px-4 py-3 rounded-lg text-xs font-mono overflow-x-auto overflow-y-auto max-h-32 whitespace-pre-wrap break-all">https://img.shields.io/badge/BUILD-PASSING-brightgreen?style=flat</code>
+                    <button class="btn-primary copy-btn w-full text-sm"><span class="btn-label">Copy</span></button>
+                </div>
+            </div>
+
+            <div id="loading" class="glass-loading hidden flex items-center gap-3 p-4 rounded-lg w-full max-w-5xl">
+                <div class="animate-spin h-5 w-5 border-2 border-purple-400 border-t-transparent rounded-full"></div>
+                <span class="font-medium text-sm">Processing custom SVG...</span>
+            </div>
+
+            <div id="resultado" class="w-full max-w-5xl"></div>
+        </div>
+    </div>
+
+    <div id="sidebar" class="sidebar hidden overflow-y-auto">
+        <div class="p-6">
+            <div class="flex items-center justify-between mb-6">
+                <h2 class="text-lg font-semibold text-gray-200">Settings</h2>
+                <button id="menu-close-btn" class="text-gray-400 hover:text-white transition-colors">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                    </svg>
+                </button>
+            </div>
+
+            <div id="badge-form" class="space-y-6">
+                <div class="space-y-4 pb-4 border-b border-white/5">
+                    <h3 class="text-xs font-semibold text-gray-400 uppercase tracking-wider">Content</h3>
+                    <div>
+                        <label class="block text-xs text-gray-400 mb-1 flex items-center gap-2">
+                            Label (optional)
+                            <span class="tooltip-trigger relative">
+                                <span class="info-icon">i</span>
+                                <span class="tooltip">Left-side label text</span>
+                            </span>
+                            <span id="label-warning-icon" class="hidden text-red-500 font-bold text-sm" title="Label is required when Label Color is set">!</span>
+                        </label>
+                        <input type="text" name="label" id="label" placeholder="BUILD" class="glass-input w-full px-3 py-2 text-sm">
+                    </div>
+                    <div>
+                        <label class="block text-xs text-gray-400 mb-1">Message *</label>
+                        <input type="text" name="message" id="message" placeholder="PASSING" required class="glass-input w-full px-3 py-2 text-sm">
+                    </div>
+                    <div>
+                        <label class="block text-xs text-gray-400 mb-1">Color</label>
+                        <select name="color" id="color" class="glass-input w-full px-3 py-2 text-sm">
+                            <option value="brightgreen" selected>Bright Green</option>
+                            <option value="green">Green</option>
+                            <option value="yellow">Yellow</option>
+                            <option value="orange">Orange</option>
+                            <option value="red">Red</option>
+                            <option value="blue">Blue</option>
+                            <option value="blueviolet">Blue Violet</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="space-y-4 pb-4 border-b border-white/5">
+                    <h3 class="text-xs font-semibold text-gray-400 uppercase tracking-wider">Style</h3>
+                    <div>
+                        <label class="block text-xs text-gray-400 mb-1">Style</label>
+                        <select name="style" id="style" class="glass-input w-full px-3 py-2 text-sm">
+                            <option value="flat" selected>Flat</option>
+                            <option value="flat-square">Flat Square</option>
+                            <option value="plastic">Plastic</option>
+                            <option value="for-the-badge">For The Badge</option>
+                            <option value="social">Social</option>
+                        </select>
+                    </div>
+                    <div id="label-color-section">
+                        <label class="block text-xs text-gray-400 mb-1">Label Color</label>
+                        <select id="labelColor-select" class="glass-input w-full px-3 py-2 text-sm mb-2">
+                            <option value="">Default</option>
+                            <option value="#333333">Dark Gray</option>
+                            <option value="#0000ff">Blue</option>
+                            <option value="#800080">Purple</option>
+                            <option value="custom">Custom</option>
+                        </select>
+                        <div id="labelColor-custom-wrapper" class="flex items-center gap-2 glass-input px-3 py-2 hidden">
+                            <div class="w-5 h-5 rounded border border-white/20 label-color-preview" id="labelColor-preview"></div>
+                            <input type="text" id="labelColor-picker" data-coloris class="bg-transparent outline-none text-sm w-full" value="" placeholder="Choose a color">
+                        </div>
+                        <input type="hidden" id="labelColor" value="">
+                    </div>
+                </div>
+
+                <div class="space-y-4 pb-4">
+                    <h3 class="text-xs font-semibold text-gray-400 uppercase tracking-wider">Logo</h3>
+                    <div class="flex gap-2">
+                        <button type="button" id="btn-simple" class="flex-1 px-3 py-2 text-xs rounded bg-purple-600/30 text-white border border-purple-500/20">Simple Icons</button>
+                        <button type="button" id="btn-custom" class="flex-1 px-3 py-2 text-xs rounded bg-white/5 text-gray-400 border border-white/5">Upload SVG</button>
+                    </div>
+
+                    <div id="simple-logo" class="space-y-3">
+                        <input type="text" name="logo" id="logo" list="popular-icons" placeholder="github, docker, python..." class="glass-input w-full px-3 py-2 text-sm">
+                        <datalist id="popular-icons">
+                            <option value="github">GitHub</option>
+                            <option value="docker">Docker</option>
+                            <option value="python">Python</option>
+                            <option value="javascript">JavaScript</option>
+                            <option value="react">React</option>
+                            <option value="nodejs">Node.js</option>
+                        </datalist>
+                    </div>
+
+                    <div id="custom-logo" class="hidden">
+                        <input type="file" name="file" id="file" accept=".svg" class="glass-input w-full px-3 py-2 text-sm cursor-pointer">
+                    </div>
+
+                    <div id="logo-color-section">
+                        <label class="block text-xs text-gray-400 mb-1">Logo Color</label>
+                        <select id="logoColor-select" class="glass-input w-full px-3 py-2 text-sm mb-2">
+                            <option value="">Default (Auto)</option>
+                            <option value="#ffffff">White</option>
+                            <option value="#000000">Black</option>
+                            <option value="custom">Custom</option>
+                        </select>
+                        <div id="logoColor-custom-wrapper" class="flex items-center gap-2 glass-input px-3 py-2 hidden">
+                            <div class="w-5 h-5 rounded border border-white/20 logo-color-preview" id="logoColor-preview"></div>
+                            <input type="text" id="logoColor-picker" data-coloris class="bg-transparent outline-none text-sm w-full" value="" placeholder="Choose a color">
+                        </div>
+                        <input type="hidden" id="logoColor" value="">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="{{ url_for('static', filename='app.js') }}" defer></script>
+</body>
+</html>
