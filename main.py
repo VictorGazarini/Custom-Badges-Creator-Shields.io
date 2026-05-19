@@ -1,5 +1,5 @@
 import os
-from App import app
+from app import app
 
 if __name__ == "__main__":
     # O modo debug=True é essencial enquanto você está aprendendo.
