@@ -1,111 +1,62 @@
-# Custom Shields.io Creator
+<p align="center">
+	<img src="https://img.shields.io/badge/Badge-Creator-blue?style=flat&labelColor=%23ffffff&logo=data%3Aimage%2Fsvg%2Bxml%3Bbase64%2CPD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0idXRmLTgiPz48IS0tIFVwbG9hZGVkIHRvOiBTVkcgUmVwbywgd3d3LnN2Z3JlcG8uY29tLCBHZW5lcmF0b3I6IFNWRyBSZXBvIE1peGVyIFRvb2xzIC0tPg0KPHN2ZyB3aWR0aD0iODAwcHgiIGhlaWdodD0iODAwcHgiIHZpZXdCb3g9IjAgMCAxNiAxNiIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4NCjxwYXRoIGQ9Ik0xMSAwTDE2IDVMMTQgN1YxMkwzIDE2TDIuMjA3MTEgMTUuMjA3MUw2LjQ4MTk2IDEwLjkzMjNDNi42NDcxOCAxMC45NzY0IDYuODIwODQgMTEgNyAxMUM4LjEwNDU3IDExIDkgMTAuMTA0NiA5IDlDOSA3Ljg5NTQzIDguMTA0NTcgNyA3IDdDNS44OTU0MyA3IDUgNy44OTU0MyA1IDlDNSA5LjE3OTE2IDUuMDIzNTYgOS4zNTI4MiA1LjA2Nzc0IDkuNTE4MDRMMC43OTI4OTMgMTMuNzkyOUwwIDEzTDQgMkg5TDExIDBaIiBmaWxsPSIjMDAwMDAwIi8%2BDQo8L3N2Zz4%3D" alt="Badge Preview" width="800" />
+</p>
 
-Minimal Flask app for generating Shields.io badge URLs with a web UI and a lightweight REST API.
+<p align="center">
+	<img src="https://img.shields.io/badge/license-MIT-green?style=flat" alt="MIT License" width="150" />
+	<img src="https://img.shields.io/badge/docker-ready-2496ED?style=flat&logo=docker&logoColor=white" alt="Docker Ready" width="200" />
+	<img src="https://img.shields.io/badge/community-open%20source-blue?style=flat" alt="Open Source" width="290" />
+</p>
 
-## Objetivo do projeto
+# Custom Shields.io Badge Creator
 
-- MVP simples com pretensão de escalar: demonstrar um ciclo de vida end-to-end (desenvolvimento → build → imagem container → deploy) com baixo custo operacional e máxima portabilidade.
+Aplicação Flask para gerar URLs de badges do Shields.io com interface web e API JSON.
 
-## Arquitetura do projeto
+## Visão geral 
 
-- Backend: `Flask` serve o template e endpoints mínimos:
-  - `/` UI estática
-  - `/api/healthz` health check (GET)
-  - `/api/generate` geração programática de URL do badge (POST)
-- Frontend: arquivos estáticos em `App/static` com `app.js` (lógica UI) e Tailwind (`input.css` → `output.css`).
-- Build & Run: `package.json` contém scripts Tailwind; `Dockerfile` e `compose.yaml` permitem execução reproduzível.
+- O projeto foi desenvolvido para possibilitar a criação de badges de forma interativa e dinâmica.
+- O núcleo da aplicação é o conversor customizável de SVG, usado para transformar uploads em badges ou recursos visuais reutilizáveis.
+- Backend: Flask.
+- Frontend: HTML + JavaScript + Tailwind CSS.
+- Execução: local ou via Docker.
+- Estado: a aplicação é stateless, então não depende de banco de dados.
 
-## Decisões técnicas
+## Estrutura
 
-- Simplicidade primeiro: poucas rotas, lógica estateless e validação mínima. Isso reduz superfície de bugs e facilita escalar horizontalmente.
-- Eficiência: assets estáticos servidos diretamente pelo Flask (ou por proxy/CND em produção); CSS gerado em build para evitar processamento runtime.
-- Portabilidade: containerização com Docker para garantir que o mesmo artefato rode localmente e em provedores (Cloud Run, Render, Fly, etc.).
+- `main.py` inicializa o servidor.
+- `App/__init__.py` cria a aplicação Flask e configura headers de segurança.
+- `App/routes.py` expõe as rotas da UI e da API.
+- `App/templates/index.html` contém a interface principal.
+- `App/static/` contém JS e CSS gerado pelo Tailwind.
+- O fluxo de SVG é tratado no frontend e servido pela API para manter a experiência interativa.
 
-## Simplicidade e eficiência — por que funciona
+## Rotas
 
-- A aplicação faz pouco: monta uma URL para `img.shields.io` com base em entradas do usuário. Como não armazena estado, é simples replicá-la.
-- A separação UI/API permite que consumidores programáticos (scripts, CI/CD, bots) usem a função via HTTP sem depender da interface web.
+- `GET /` - página web.
+- `GET /api/healthz` - health check.
+- `POST /api/generate` - gera a URL do badge a partir de JSON.
 
-## Funcionamento (por trás dos panos)
+## Exemplos de uso da API
 
-1. O servidor Flask é inicializado por `main.py`; `App/__init__.py` configura a app e importa as rotas (`App/routes.py`).
-2. A rota `/` entrega `App/templates/index.html`, que carrega `App/static/app.js` e `output.css`.
-3. `app.js` atualiza o preview montando a URL do badge (ex.: `https://img.shields.io/badge/LABEL-MESSAGE-COLOR?...`).
-4. `POST /api/generate` recebe JSON, valida `message` (obrigatório), monta a URL usando `urllib.parse` e devolve JSON `{ "url": "..." }`.
-5. `GET /api/healthz` retorna `{ "status": "ok" }` usado para health/readiness.
+Health check:
 
----
+```bash
+curl http://localhost:5000/api/healthz
+```
 
-## Tutorial de uso
+Gerar badge com `curl`:
 
-### Pré-requisitos
+```bash
+curl -X POST http://localhost:5000/api/generate \
+	-H "Content-Type: application/json" \
+	-d '{"label":"BUILD","message":"PASSING","color":"brightgreen","style":"flat","logo":"github"}'
+```
 
-- Python 3.11+ (ou 3.12)
-- Node.js (para Tailwind)
-- Docker (opcional, recomendado para testes e deploy)
-
-### Rodando local (venv)
-
-PowerShell:
+Exemplo em PowerShell:
 
 ```powershell
-& .\venv\Scripts\Activate.ps1
-pip install -r requirements.txt
-npm install
-npm run build:css
-$env:APP_HOST='127.0.0.1'; $env:APP_PORT='5000'; python main.py
-```
-
-Bash/macOS:
-
-```bash
-source venv/bin/activate
-pip install -r requirements.txt
-npm install
-npm run build:css
-APP_HOST=127.0.0.1 APP_PORT=5000 python main.py
-```
-
-Abra no navegador: `http://127.0.0.1:5000`
-
-### Usando Docker (rápido e reproduzível)
-
-Build da imagem:
-
-```bash
-docker build -t custom-shields-creator .
-```
-
-Rodar container:
-
-```bash
-docker run --rm -d -p 5000:5000 --name custom-shields-creator custom-shields-creator
-```
-
-Ou com Compose:
-
-```bash
-docker compose up --build -d
-# parar
-
-docker compose down
-```
-
-### Testes / API
-
-Health (GET):
-
-```bash
-curl -sS http://127.0.0.1:5000/api/healthz
-# => {"status":"ok"}
-```
-
-Generate (POST):
-
-```bash
-curl -sS -X POST http://127.0.0.1:5000/api/generate \
-  -H "Content-Type: application/json" \
-  -d '{"label":"BUILD","message":"PASSING","color":"brightgreen","style":"flat","logo":"github"}'
+$body = @{ label='BUILD'; message='PASSING'; color='brightgreen'; style='flat'; logo='github' } | ConvertTo-Json
+Invoke-RestMethod -Method Post -Uri "http://localhost:5000/api/generate" -ContentType "application/json" -Body $body
 ```
 
 Resposta esperada:
@@ -114,35 +65,86 @@ Resposta esperada:
 {"url":"https://img.shields.io/badge/BUILD-PASSING-brightgreen?style=flat&logo=github"}
 ```
 
-PowerShell exemplo:
+Erros comuns:
 
-```powershell
-$body = @{ label='BUILD'; message='PASSING'; color='brightgreen' } | ConvertTo-Json
-Invoke-RestMethod -Method POST -Uri "http://127.0.0.1:5000/api/generate" -ContentType "application/json" -Body $body
+```json
+{"error":"invalid_json","details":"Send a JSON object body."}
 ```
 
-### Teste rápido automatizado
+Status HTTP: `400 Bad Request`
 
-- Há um script `test-local.ps1` que tenta `healthz`, `generate` e, se necessário, inicia o container via Docker.
+Quando o campo `message` não é enviado:
 
----
+```json
+{"error":"validation_error","details":"'message' is required"}
+```
 
-## Observações para evolução/entrevista
+Status HTTP: `400 Bad Request`
 
-- O design é intencionalmente minimal para demonstrar princípios: API bem definida, stateless, container-ready e com testes de smoke.
-- Para produção: adicionar proxy reverso (Nginx/Caddy), TLS automático, rate limiting, validação/sanitização de uploads SVG (se habilitar), e monitoramento/log centralizado.
+## Pré-requisitos
 
----
+- Python 3.11+.
+- Node.js 18+.
+- Docker e Docker Compose, se quiser rodar via container.
 
-## Arquivos-chave
+## Como rodar localmente com Docker
 
-- `main.py` — entrada da aplicação
-- `App/__init__.py` — criação do Flask app
-- `App/routes.py` — rotas
-- `App/static/` — assets JS/CSS
-- `Dockerfile`, `compose.yaml` — build/runtimes
-- `test-local.ps1` — smoke test PowerShell
+1. Garanta que o Docker Desktop ou Docker Engine esteja ativo.
+2. No diretório do projeto, rode:
 
----
+```bash
+docker compose up -d --build
+```
 
-Faça `.	est-local.ps1` (PowerShell) ou use os `curl`/`Invoke-RestMethod` mostrados para validar localmente.
+3. Abra no navegador:
+
+```text
+http://localhost:5000
+```
+
+4. Para parar:
+
+```bash
+docker compose down
+```
+
+## Desenvolvimento local sem Docker
+
+Se quiser rodar direto no Python:
+
+```powershell
+python -m venv venv
+& .\venv\Scripts\Activate.ps1
+pip install -r requirements.txt
+npm install
+npm run build:css
+python main.py
+```
+
+## Observações técnicas
+
+- O projeto usa Tailwind compilado para `App/static/output.css`.
+- Se alterar estilos, rode `npm run build:css` antes de rebuildar o container.
+- O backend monta a URL final do badge com base em `label`, `message`, `color`, `style` e demais parâmetros opcionais.
+
+## Licença
+
+Este projeto está sob licença MIT. Veja o arquivo `LICENSE`.
+
+## Contribuindo
+
+Contribuições são bem-vindas. Se quiser ajudar:
+
+1. Faça um fork do repositório.
+2. Crie uma branch com sua alteração.
+3. Envie um pull request com uma descrição objetiva.
+
+Antes de abrir o PR, verifique se a aplicação sobe corretamente com Docker e se os arquivos estáticos foram recompilados quando necessário.
+
+## Roadmap
+
+- Melhorar a experiência de conversão de SVG.
+- Adicionar mais validações de entrada na API.
+- Incluir exemplos de uso e screenshots.
+- Adicionar redirecionamento de links personalizável.
+- Evoluir a pipeline de build e deploy.
